@@ -96,3 +96,16 @@ jobs:
             --title "$VERSION" \
             --notes "Release $VERSION" \
             --verify-tag
+
+  reset-dev:
+    needs: publish
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Reset dev branch to main
+        run: git push origin main:dev --force
