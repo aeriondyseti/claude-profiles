@@ -1,0 +1,32 @@
+{
+  "name": "@aeriondyseti/claude-profiles",
+  "version": "0.1.0",
+  "description": "TUI and CLI for managing Claude Code profiles",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "claude-profiles": "src/cli.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "prepublishOnly": "bunx tsc --noEmit"
+  },
+  "keywords": [
+    "claude",
+    "cli",
+    "profiles",
+    "tui"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
