@@ -5,13 +5,19 @@ import pc from "picocolors";
 
 export const HOME = homedir();
 export const CLAUDE_DIR_PREFIX = ".claude-";
+export const DEFAULT_PROFILE_NAME = "default";
+export const DEFAULT_PROFILE_DIR = join(HOME, ".claude");
 export const EXCLUDED_DIRS = new Set(["worktrees"]);
 
 export function getProfileDir(name: string): string {
+  if (name === DEFAULT_PROFILE_NAME) return DEFAULT_PROFILE_DIR;
   return join(HOME, `${CLAUDE_DIR_PREFIX}${name}`);
 }
 
 export function profileNameFromDir(dir: string): string {
+  if (dir === DEFAULT_PROFILE_DIR || basename(dir) === ".claude") {
+    return DEFAULT_PROFILE_NAME;
+  }
   return basename(dir).replace(CLAUDE_DIR_PREFIX, "");
 }
 
@@ -31,6 +37,12 @@ export function isActiveProfile(dir: string): boolean {
 export async function discoverProfiles(): Promise<string[]> {
   const entries = await readdir(HOME);
   const profiles: string[] = [];
+
+  // Include the default ~/.claude profile if it exists
+  const defaultStat = await stat(DEFAULT_PROFILE_DIR).catch(() => null);
+  if (defaultStat?.isDirectory()) {
+    profiles.push(DEFAULT_PROFILE_DIR);
+  }
 
   for (const entry of entries) {
     if (!entry.startsWith(CLAUDE_DIR_PREFIX)) continue;

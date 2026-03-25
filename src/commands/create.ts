@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import { createProfile, getAllProfiles, readSettings } from "../profiles.ts";
+import { createProfile, getAllProfiles, readSettings, defaultSettings } from "../profiles.ts";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -56,9 +56,17 @@ export async function createProfileCommand(nameArg?: string): Promise<void> {
   if (copyFrom) {
     const settings = await readSettings(copyFrom);
     if (settings) {
+      const defaults = defaultSettings(name);
+      const merged = {
+        ...settings,
+        hooks: {
+          ...((settings.hooks as Record<string, unknown>) ?? {}),
+          ...((defaults.hooks as Record<string, unknown>) ?? {}),
+        },
+      };
       await writeFile(
         join(dir, "settings.json"),
-        JSON.stringify(settings, null, 2) + "\n",
+        JSON.stringify(merged, null, 2) + "\n",
       );
     }
   }

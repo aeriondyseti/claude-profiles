@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { deleteProfile } from "../profiles.ts";
-import { isActiveProfile } from "../utils.ts";
+import { isActiveProfile, DEFAULT_PROFILE_NAME } from "../utils.ts";
 import { selectProfile } from "./shared.ts";
 
 function isCancel(value: unknown): value is symbol {
@@ -10,6 +10,11 @@ function isCancel(value: unknown): value is symbol {
 export async function deleteProfileCommand(nameArg?: string): Promise<void> {
   const profile = await selectProfile("Which profile to delete?", nameArg);
   if (!profile) return;
+
+  if (profile.name === DEFAULT_PROFILE_NAME) {
+    p.log.error(`Cannot delete the default profile.`);
+    return;
+  }
 
   if (isActiveProfile(profile.dir)) {
     p.log.error(
