@@ -8,6 +8,8 @@ import { cloneProfileCommand } from "./commands/clone.ts";
 import { deleteProfileCommand } from "./commands/delete.ts";
 import { switchProfileCommand } from "./commands/switch.ts";
 import { runProfileCommand } from "./commands/run.ts";
+import { bindProfileCommand } from "./commands/bind.ts";
+import { unbindCommand } from "./commands/unbind.ts";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -52,6 +54,14 @@ async function run(): Promise<void> {
       break;
     }
 
+    case "bind":
+      await bindProfileCommand(args[1], args[2]);
+      break;
+
+    case "unbind":
+      await unbindCommand(args[1]);
+      break;
+
     case "help":
     case "--help":
     case "-h":
@@ -83,6 +93,8 @@ Usage:
   claude-profiles delete [name]            Delete a profile
   claude-profiles switch [name]            Show how to activate a profile
   claude-profiles run [name] [-- args]     Run Claude with a specific profile
+  claude-profiles bind [name] [path]       Bind a profile to a directory (.claude-profile)
+  claude-profiles unbind [path]            Remove .claude-profile from a directory
 
 Aliases:
   ls = list, new = create, cp = clone,

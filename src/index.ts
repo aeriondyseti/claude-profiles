@@ -7,6 +7,8 @@ import { cloneProfileCommand } from "./commands/clone.ts";
 import { deleteProfileCommand } from "./commands/delete.ts";
 import { switchProfileCommand } from "./commands/switch.ts";
 import { runProfileCommand } from "./commands/run.ts";
+import { bindProfileCommand } from "./commands/bind.ts";
+import { unbindCommand } from "./commands/unbind.ts";
 
 function isCancel(value: unknown): value is symbol {
   return p.isCancel(value);
@@ -26,6 +28,8 @@ export async function main(): Promise<void> {
         { value: "delete", label: "Delete profile" },
         { value: "switch", label: "Switch active profile" },
         { value: "run", label: "Run Claude with profile" },
+        { value: "bind", label: "Bind profile to directory" },
+        { value: "unbind", label: "Unbind profile from directory" },
         { value: "exit", label: "Exit" },
       ],
     });
@@ -56,6 +60,12 @@ export async function main(): Promise<void> {
         break;
       case "run":
         await runProfileCommand();
+        break;
+      case "bind":
+        await bindProfileCommand();
+        break;
+      case "unbind":
+        await unbindCommand();
         break;
     }
   }

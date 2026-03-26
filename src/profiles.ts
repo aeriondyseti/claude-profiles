@@ -77,6 +77,11 @@ export async function getAllProfiles(): Promise<ProfileInfo[]> {
 
 export function defaultSettings(profileName: string): Record<string, unknown> {
   return {
+    env: {
+      CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1",
+      ENABLE_CLAUDEAI_MCP_SERVERS: "false",
+      CLAUDE_CODE_DISABLE_AUTO_MEMORY: "1",
+    },
     hooks: {
       SessionStart: [
         {

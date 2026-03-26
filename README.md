@@ -44,6 +44,8 @@ npx @aeriondyseti/claude-profiles
 | `delete [name]` | `rm` | Delete a profile (with confirmation) |
 | `switch [name]` | `use` | Print the `export` command and shell alias to activate a profile |
 | `run [name] [-- args]` | `exec` | Launch `claude` with a specific profile's config dir |
+| `bind [name] [path]` | | Bind a profile to a directory via `.claude-profile` |
+| `unbind [path]` | | Remove a `.claude-profile` binding from a directory |
 
 All commands accept an optional profile name argument. If omitted, an interactive prompt is shown.
 
@@ -80,6 +82,33 @@ claude-profiles clone work staging
 ```
 
 Clones configuration files only — `settings.json`, `CLAUDE.md`, `commands/`, `hooks/`, `agents/`, `skills/`, and `output-styles/`. Auth state and session history are **not** copied.
+
+### Directory-aware profiles
+
+You can bind a profile to a directory so that `claude-profiles run` automatically uses it:
+
+```sh
+# Bind the "work" profile to the current directory
+claude-profiles bind work
+
+# Now run Claude without specifying a profile
+claude-profiles run
+# => Using profile 'work' (from /path/to/project/.claude-profile)
+```
+
+This writes a `.claude-profile` TOML file in the directory:
+
+```toml
+profile = "work"
+```
+
+The `run` command walks up from the current directory looking for this file. If found, it uses that profile automatically. If not found and no name is given, it falls back to the interactive prompt.
+
+To remove a binding:
+
+```sh
+claude-profiles unbind
+```
 
 ### Shell alias for quick access
 

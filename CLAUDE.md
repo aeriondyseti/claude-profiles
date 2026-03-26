@@ -12,7 +12,8 @@ Published as `@aeriondyseti/claude-profiles` on npm.
 
 - **Runtime**: Bun (not Node). The CLI shebang is `#!/usr/bin/env bun`.
 - **Install deps**: `bun install`
-- **Typecheck**: `bunx tsc --noEmit` (this is the only CI check — there are no tests or linter)
+- **Typecheck**: `bunx tsc --noEmit`
+- **Test**: `bun test` (uses Bun's built-in test runner; test files live alongside source as `*.test.ts`)
 - **Run locally**: `bun src/cli.ts` (interactive TUI) or `bun src/cli.ts <command> [args]`
 - **No build step**: TypeScript runs directly via Bun; `tsconfig.json` has `noEmit: true`
 
@@ -22,14 +23,15 @@ Published as `@aeriondyseti/claude-profiles` on npm.
 - `src/index.ts` — Interactive TUI loop using `@clack/prompts`. Presents a menu that dispatches to the same command handlers.
 - `src/profiles.ts` — Core profile operations (create, clone, delete, read info). Manages `settings.json` and `.claude.json` per profile directory.
 - `src/utils.ts` — Profile directory resolution, discovery (scans `~/.claude-*`), and formatting helpers.
-- `src/commands/` — One file per command (`list`, `create`, `edit`, `clone`, `delete`, `switch`, `run`). Each exports a function accepting optional CLI args; falls back to interactive prompts via `shared.ts`.
+- `src/detect.ts` — `.claude-profile` TOML file detection. Walks up from `cwd` looking for `.claude-profile`, parses it with `smol-toml`, returns the profile name and file path.
+- `src/commands/` — One file per command (`list`, `create`, `edit`, `clone`, `delete`, `switch`, `run`, `bind`, `unbind`). Each exports a function accepting optional CLI args; falls back to interactive prompts via `shared.ts`.
 - `src/commands/shared.ts` — Shared `selectProfile()` prompt used by most commands.
 
 Key design: every command function works both as a CLI handler (args passed directly) and as a TUI handler (prompts the user when args are missing).
 
 ## Release Model
 
-- `dev` branch → publishes with `@dev` npm tag
-- `rc/*` branches → publish with `@rc` tag
-- Git tags `v*` on `main` → publish with `@latest` tag + GitHub Release
+- `dev` branch → publishes with `@dev` npm tag (version auto-suffixed with `-dev.<run_number>`)
+- `main` branch → publishes with `@latest` npm tag + auto-creates git tag and GitHub Release
+- Merges to `main` automatically reset `dev` to match `main`
 - CI uses OIDC trusted publishing (no npm token stored)
